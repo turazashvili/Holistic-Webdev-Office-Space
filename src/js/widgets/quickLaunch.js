@@ -339,7 +339,9 @@ export class QuickLaunchWidget extends BaseWidget {
 
     closeDialog(dialog) {
         this.services.accessibility.releaseFocusTrap();
-        document.body.removeChild(dialog);
+        if (dialog.parentNode) {
+            document.body.removeChild(dialog);
+        }
     }
 
     addShortcut(dialog) {
@@ -457,13 +459,6 @@ export class QuickLaunchWidget extends BaseWidget {
         this.announce(`Shortcut "${shortcut.title}" deleted`);
         
         console.log(`🗑️ Shortcut deleted: ${shortcut.title}`);
-    }
-
-    /**
-     * Close dialog
-     */
-    closeDialog(dialog) {
-        dialog.remove();
     }
 
     getDebugInfo() {

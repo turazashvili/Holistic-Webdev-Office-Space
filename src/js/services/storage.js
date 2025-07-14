@@ -249,6 +249,31 @@ export class StorageService {
             ...data,
             timestamp: Date.now()
         };
+        
+        // Check storage quota before saving
+        if (this.getStorageInfo().percentage > 90) {
+            this.cleanupOldData();
+        }
+        
         return this.setItem(`widget_${widgetName}`, dataWithTimestamp);
+    }
+
+    /**
+     * Clean up old data when storage is nearly full
+     */
+    cleanupOldData() {
+        const keys = this.getAllKeys();
+        const widgetDataKeys = keys.filter(key => key.startsWith('widget_'));
+        
+        // Remove oldest widget data
+        widgetDataKeys.forEach(key => {
+            const data = this.getItem(key);
+            if (data && data.timestamp) {
+                const oneWeek = 7 * 24 * 60 * 60 * 1000;
+                if (Date.now() - data.timestamp > oneWeek) {
+                    this.removeItem(key);
+                }
+            }
+        });
     }
 }
