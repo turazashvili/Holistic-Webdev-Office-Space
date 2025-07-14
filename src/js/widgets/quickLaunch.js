@@ -92,13 +92,23 @@ export class QuickLaunchWidget extends BaseWidget {
                    title="${this.sanitizeHTML(shortcut.description)}">
                     <span class="shortcut__icon" aria-hidden="true">${shortcut.icon}</span>
                     <span class="shortcut__title">${this.sanitizeHTML(shortcut.title)}</span>
-                    <button class="shortcut__remove" 
-                            aria-label="Remove ${this.sanitizeHTML(shortcut.title)} shortcut"
-                            data-shortcut-id="${shortcut.id}"
-                            onclick="event.preventDefault(); event.stopPropagation();">
-                        <span aria-hidden="true">×</span>
-                    </button>
                 </a>
+                <div class="shortcut__actions">
+                    <button class="shortcut__action shortcut__action--edit" 
+                            aria-label="Edit ${this.sanitizeHTML(shortcut.title)} shortcut"
+                            data-shortcut-id="${shortcut.id}"
+                            title="Edit shortcut"
+                            onclick="event.preventDefault(); event.stopPropagation();">
+                        <span aria-hidden="true">✏️</span>
+                    </button>
+                    <button class="shortcut__action shortcut__action--delete" 
+                            aria-label="Delete ${this.sanitizeHTML(shortcut.title)} shortcut"
+                            data-shortcut-id="${shortcut.id}"
+                            title="Delete shortcut"
+                            onclick="event.preventDefault(); event.stopPropagation();">
+                        <span aria-hidden="true">🗑️</span>
+                    </button>
+                </div>
             </div>
         `;
     }
@@ -110,14 +120,27 @@ export class QuickLaunchWidget extends BaseWidget {
             addButton.addEventListener('click', () => this.showAddShortcutDialog());
         }
 
-        // Remove shortcut buttons
-        const removeButtons = this.container.querySelectorAll('.shortcut__remove');
-        removeButtons.forEach(button => {
+        // Edit shortcut buttons
+        const editButtons = this.container.querySelectorAll('.shortcut__action--edit');
+        editButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 const shortcutId = button.getAttribute('data-shortcut-id');
-                this.removeShortcut(shortcutId);
+                this.editShortcut(shortcutId);
+            });
+        });
+
+        // Delete shortcut buttons
+        const deleteButtons = this.container.querySelectorAll('.shortcut__action--delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const shortcutId = button.getAttribute('data-shortcut-id');
+                this.deleteShortcut(shortcutId);
+            });
+        });
             });
         });
 
@@ -338,6 +361,49 @@ export class QuickLaunchWidget extends BaseWidget {
     saveShortcuts() {
         const customShortcuts = this.shortcuts.filter(s => !s.isDefault);
         this.services.storage.setCustomShortcuts(customShortcuts);
+    }
+
+    /**
+     * Edit an existing shortcut
+     */
+    editShortcut(shortcutId) {
+        const shortcut = this.shortcuts.find(s => s.id === shortcutId);
+        if (!shortcut) return;
+
+        this.showAddShortcutDialog(shortcut);
+    }
+
+    /**
+     * Delete a shortcut with confirmation
+     */
+    deleteShortcut(shortcutId) {
+        const shortcut = this.shortcuts.find(s => s.id === shortcutId);
+        if (!shortcut) return;
+
+        // Show confirmation dialog
+        const confirmed = confirm(`Are you sure you want to delete "${shortcut.title}"?`);
+        if (!confirmed) return;
+
+        // Remove from shortcuts array
+        this.shortcuts = this.shortcuts.filter(s => s.id !== shortcutId);
+        
+        // Save to storage
+        this.saveShortcuts();
+        
+        // Re-render
+        this.render();
+        
+        // Announce to screen readers
+        this.announce(`Shortcut "${shortcut.title}" deleted`);
+        
+        console.log(`🗑️ Shortcut deleted: ${shortcut.title}`);
+    }
+
+    /**
+     * Close dialog
+     */
+    closeDialog(dialog) {
+        dialog.remove();
     }
 
     getDebugInfo() {

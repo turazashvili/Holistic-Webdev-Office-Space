@@ -2028,20 +2028,72 @@ body {
     }
 }
 
-/* Other Modal Styles */
-.task-modal,
-.ticket-modal,
-.event-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: var(--z-modal);
+/* Quick Launch Shortcuts */
+.quick-launch__item {
+    position: relative;
+}
+
+.quick-launch__item:hover .shortcut__actions,
+.quick-launch__item:focus-within .shortcut__actions {
+    opacity: 1;
+    visibility: visible;
+}
+
+.shortcut__actions {
+    position: absolute;
+    top: var(--space-1);
+    right: var(--space-1);
+    display: flex;
+    gap: var(--space-1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-fast);
+    z-index: 2;
+}
+
+.shortcut__action {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--space-4);
+    font-size: var(--font-size-xs);
+    transition: all var(--transition-fast);
+    backdrop-filter: blur(4px);
+}
+
+.shortcut__action:hover,
+.shortcut__action:focus {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+}
+
+.shortcut__action--edit:hover,
+.shortcut__action--edit:focus {
+    background: var(--color-primary);
+}
+
+.shortcut__action--delete:hover,
+.shortcut__action--delete:focus {
+    background: var(--color-error);
+}
+
+/* Dark mode overrides for shortcut actions */
+[data-theme="dark"] .shortcut__action {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .shortcut__action:hover,
+[data-theme="dark"] .shortcut__action:focus {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .task-modal__backdrop,
