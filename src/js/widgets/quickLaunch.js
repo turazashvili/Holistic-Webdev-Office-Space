@@ -17,6 +17,9 @@ export class QuickLaunchWidget extends BaseWidget {
         try {
             console.log('🚀 Initializing Quick Launch Widget...');
             
+            // Clean up any duplicates in storage first
+            this.cleanupDuplicates();
+            
             await this.loadData();
             this.render();
             this.setupDragAndDrop();
@@ -42,9 +45,26 @@ export class QuickLaunchWidget extends BaseWidget {
             // Load custom shortcuts from storage
             const customShortcuts = this.services.storage.getCustomShortcuts();
             
-            // Merge and sort by order
-            this.shortcuts = [...defaultShortcuts, ...customShortcuts]
-                .sort((a, b) => a.order - b.order);
+            // Combine all shortcuts
+            const allShortcuts = [...defaultShortcuts, ...customShortcuts];
+            
+            // Remove duplicates based on ID (keep the last occurrence)
+            const uniqueShortcuts = [];
+            const seenIds = new Set();
+            
+            // Process in reverse to keep the last occurrence of each ID
+            for (let i = allShortcuts.length - 1; i >= 0; i--) {
+                const shortcut = allShortcuts[i];
+                if (!seenIds.has(shortcut.id)) {
+                    seenIds.add(shortcut.id);
+                    uniqueShortcuts.unshift(shortcut);
+                }
+            }
+            
+            // Sort by order and assign to shortcuts
+            this.shortcuts = uniqueShortcuts.sort((a, b) => a.order - b.order);
+            
+            console.log(`📊 Loaded ${this.shortcuts.length} unique shortcuts (removed ${allShortcuts.length - this.shortcuts.length} duplicates)`);
             
         } catch (error) {
             console.error('Failed to load shortcuts:', error);
@@ -374,6 +394,33 @@ export class QuickLaunchWidget extends BaseWidget {
     saveShortcuts() {
         const customShortcuts = this.shortcuts.filter(s => !s.isDefault);
         this.services.storage.setCustomShortcuts(customShortcuts);
+    }
+
+    /**
+     * Clean up localStorage duplicates
+     */
+    cleanupDuplicates() {
+        const customShortcuts = this.services.storage.getCustomShortcuts();
+        if (!customShortcuts || customShortcuts.length === 0) return;
+        
+        // Remove duplicates from custom shortcuts
+        const uniqueCustomShortcuts = [];
+        const seenIds = new Set();
+        
+        // Process in reverse to keep the last occurrence
+        for (let i = customShortcuts.length - 1; i >= 0; i--) {
+            const shortcut = customShortcuts[i];
+            if (!seenIds.has(shortcut.id)) {
+                seenIds.add(shortcut.id);
+                uniqueCustomShortcuts.unshift(shortcut);
+            }
+        }
+        
+        // Save cleaned up shortcuts back to storage
+        if (uniqueCustomShortcuts.length !== customShortcuts.length) {
+            this.services.storage.setCustomShortcuts(uniqueCustomShortcuts);
+            console.log(`🧹 Cleaned up ${customShortcuts.length - uniqueCustomShortcuts.length} duplicate shortcuts from storage`);
+        }
     }
 
     /**
