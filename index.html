@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Smart Day-Starter Dashboard - Professional intranet homepage for streamlined daily workflows">
+    <title>Smart Day-Starter Dashboard</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="src/css/main.css" as="style">
+    <link rel="preload" href="src/js/main.js" as="script">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="src/css/main.css">
+    
+    <!-- Skip navigation for accessibility -->
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" role="banner">
+        <div class="header__container">
+            <h1 class="header__title">Smart Day-Starter Dashboard</h1>
+            <nav class="header__nav" role="navigation" aria-label="Main navigation">
+                <button class="header__theme-toggle" aria-label="Toggle dark mode" type="button">
+                    <span class="theme-toggle__icon" aria-hidden="true">🌙</span>
+                </button>
+                <button class="header__settings" aria-label="Dashboard settings" type="button">
+                    <span class="settings__icon" aria-hidden="true">⚙️</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="main" role="main">
+        <div class="dashboard">
+            <!-- Announcements Section -->
+            <section class="dashboard__section" aria-labelledby="announcements-heading">
+                <h2 id="announcements-heading" class="section__title">Announcements</h2>
+                <div class="announcements" id="announcements-container" role="region" aria-live="polite">
+                    <!-- Announcements will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard__grid">
+                <!-- Quick Launch Widget -->
+                <section class="widget widget--quick-launch" aria-labelledby="quick-launch-heading">
+                    <h2 id="quick-launch-heading" class="widget__title">Quick Launch</h2>
+                    <div class="quick-launch" id="quick-launch-container">
+                        <!-- Quick launch shortcuts will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Tasks & Approvals Widget -->
+                <section class="widget widget--tasks" aria-labelledby="tasks-heading">
+                    <h2 id="tasks-heading" class="widget__title">Tasks & Approvals</h2>
+                    <div class="tasks" id="tasks-container">
+                        <!-- Tasks will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Calendar Widget -->
+                <section class="widget widget--calendar" aria-labelledby="calendar-heading">
+                    <h2 id="calendar-heading" class="widget__title">Team Calendar</h2>
+                    <div class="calendar" id="calendar-container">
+                        <!-- Calendar will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Support Tickets Widget -->
+                <section class="widget widget--tickets" aria-labelledby="tickets-heading">
+                    <h2 id="tickets-heading" class="widget__title">Support Tickets</h2>
+                    <div class="tickets" id="tickets-container">
+                        <!-- Support tickets will be loaded here -->
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer__container">
+            <p class="footer__text">&copy; 2025 Smart Day-Starter Dashboard. Built for the DEV.to Holistic Webdev Challenge.</p>
+        </div>
+    </footer>
+
+    <!-- Loading indicator -->
+    <div class="loading" id="loading-indicator" aria-hidden="true">
+        <div class="loading__spinner"></div>
+        <span class="loading__text">Loading dashboard...</span>
+    </div>
+
+    <!-- JavaScript -->
+    <script type="module" src="src/js/main.js"></script>
+</body>
+</html>
