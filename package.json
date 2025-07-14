@@ -5,8 +5,11 @@
   "type": "module",
   "main": "src/js/main.js",
   "scripts": {
-    "serve": "python3 -m http.server 8000",
-    "test": "echo \"Run tests by opening test.html in browser\" && exit 0"
+    "dev": "python3 -m http.server 8000",
+    "build": "echo \"Static site - no build needed\" && exit 0",
+    "start": "python3 -m http.server 8000",
+    "test": "echo \"Run tests by opening test.html in browser\" && exit 0",
+    "deploy": "vercel --prod"
   },
   "repository": {
     "type": "git",
