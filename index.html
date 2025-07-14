@@ -47,7 +47,17 @@
         <div class="dashboard">
             <!-- Announcements Section -->
             <section class="dashboard__section" aria-labelledby="announcements-heading">
-                <h2 id="announcements-heading" class="section__title">Announcements</h2>
+                <div class="announcements__header">
+                    <h2 id="announcements-heading" class="section__title">Announcements</h2>
+                    <button class="announcements__toggle" 
+                            aria-label="Toggle announcements visibility" 
+                            aria-expanded="true"
+                            aria-controls="announcements-container"
+                            type="button">
+                        <span class="announcements__count" aria-hidden="true">0</span>
+                        <span class="announcements__toggle-icon" aria-hidden="true">▼</span>
+                    </button>
+                </div>
                 <div class="announcements" id="announcements-container" role="region" aria-live="polite">
                     <!-- Announcements will be loaded here -->
                 </div>

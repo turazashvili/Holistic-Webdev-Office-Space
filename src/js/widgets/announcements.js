@@ -25,6 +25,9 @@ export class AnnouncementsWidget extends BaseWidget {
             await this.loadData();
             this.render();
             
+            // Set up toggle functionality
+            this.setupToggle();
+            
             // Start auto-refresh
             this.startAutoRefresh();
             
@@ -83,6 +86,9 @@ export class AnnouncementsWidget extends BaseWidget {
      * Render the announcements
      */
     render() {
+        // Update the count in the toggle button
+        this.updateToggleCount();
+        
         if (!this.data || this.data.length === 0) {
             this.showEmptyState('No announcements at this time', 'Refresh', () => this.refresh());
             return;
@@ -105,6 +111,77 @@ export class AnnouncementsWidget extends BaseWidget {
         const highPriorityCount = this.data.filter(a => a.priority === 'high').length;
         if (highPriorityCount > 0) {
             this.announce(`${highPriorityCount} high priority announcement${highPriorityCount !== 1 ? 's' : ''} available`, 'assertive');
+        }
+    }
+
+    /**
+     * Set up toggle functionality
+     */
+    setupToggle() {
+        const toggleButton = document.querySelector('.announcements__toggle');
+        if (!toggleButton) return;
+
+        // Load saved state
+        const isCollapsed = this.services.storage.getItem('announcements_collapsed') || false;
+        this.setToggleState(!isCollapsed);
+
+        toggleButton.addEventListener('click', () => {
+            const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+            this.setToggleState(!isExpanded);
+            
+            // Save state
+            this.services.storage.setItem('announcements_collapsed', !isExpanded);
+            
+            // Announce state change
+            this.announce(isExpanded ? 'Announcements collapsed' : 'Announcements expanded');
+        });
+
+        // Keyboard support
+        toggleButton.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleButton.click();
+            }
+        });
+    }
+
+    /**
+     * Set toggle state (expanded/collapsed)
+     */
+    setToggleState(isExpanded) {
+        const toggleButton = document.querySelector('.announcements__toggle');
+        const container = this.container;
+        
+        if (!toggleButton || !container) return;
+
+        toggleButton.setAttribute('aria-expanded', isExpanded.toString());
+        
+        if (isExpanded) {
+            container.classList.remove('announcements--collapsed');
+            container.classList.add('announcements--expanded');
+            toggleButton.setAttribute('aria-label', 'Collapse announcements');
+        } else {
+            container.classList.add('announcements--collapsed');
+            container.classList.remove('announcements--expanded');
+            toggleButton.setAttribute('aria-label', 'Expand announcements');
+        }
+    }
+
+    /**
+     * Update the count in the toggle button
+     */
+    updateToggleCount() {
+        const countElement = document.querySelector('.announcements__count');
+        if (countElement && this.data) {
+            countElement.textContent = this.data.length.toString();
+            
+            // Update aria-label with count
+            const toggleButton = document.querySelector('.announcements__toggle');
+            if (toggleButton) {
+                const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+                const action = isExpanded ? 'Collapse' : 'Expand';
+                toggleButton.setAttribute('aria-label', `${action} ${this.data.length} announcement${this.data.length !== 1 ? 's' : ''}`);
+            }
         }
     }
 
@@ -210,6 +287,9 @@ export class AnnouncementsWidget extends BaseWidget {
             // Remove from data and re-render
             this.data = this.data.filter(a => a.id !== announcementId);
             this.render();
+            
+            // Update toggle count
+            this.updateToggleCount();
             
             // Emit event
             this.services.eventBus.emit('announcement:dismissed', announcementId);
