@@ -2033,7 +2033,7 @@ body.modal-open {
     overflow: hidden;
 }
 
-/* Modal Containers */
+/* Enhanced Modal Containers */
 .task-modal,
 .ticket-modal,
 .event-modal {
@@ -2042,22 +2042,15 @@ body.modal-open {
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    z-index: var(--z-modal) !important;
+    z-index: 9999 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     padding: var(--space-4);
     opacity: 1;
     visibility: visible;
-    animation: fadeIn 0.2s ease-out;
+    animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: transparent;
-}
-
-/* Ensure modals appear above everything */
-.task-modal,
-.ticket-modal,
-.event-modal {
-    z-index: 9999 !important;
 }
 
 /* Quick Launch Shortcuts */
@@ -2196,15 +2189,297 @@ body.modal-open {
 .ticket-modal__body,
 .event-modal__body {
     padding: var(--space-6);
+    background: var(--color-surface-elevated);
+    max-height: calc(85vh - 120px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+}
+
+/* Enhanced Modal Styling */
+.task-modal__backdrop,
+.ticket-modal__backdrop,
+.event-modal__backdrop,
+.shortcut-dialog__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+    cursor: pointer;
+    backdrop-filter: blur(8px) saturate(1.2);
+    z-index: 0;
+    animation: backdropFadeIn 0.3s ease-out;
+}
+
+.task-modal__content,
+.ticket-modal__content,
+.event-modal__content,
+.shortcut-dialog__content {
+    position: relative !important;
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-2xl);
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    max-width: 700px;
+    width: 100%;
+    max-height: 85vh;
+    overflow: hidden;
+    animation: modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid var(--color-border);
+    z-index: 1;
+    margin: auto;
+    transform: translateY(0);
+}
+
+.task-modal__header,
+.ticket-modal__header,
+.event-modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-6) var(--space-6) var(--space-4) var(--space-6);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+    color: white;
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.task-modal__header::before,
+.ticket-modal__header::before,
+.event-modal__header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    pointer-events: none;
+}
+
+.task-modal__header h3,
+.ticket-modal__header h3,
+.event-modal__header h3 {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.task-modal__close,
+.ticket-modal__close,
+.event-modal__close {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-full);
+    color: white;
+    cursor: pointer;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    backdrop-filter: blur(10px);
+    padding: 0;
+}
+
+.task-modal__close:hover,
+.ticket-modal__close:hover,
+.event-modal__close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced scrollbar styling */
+.task-modal__body::-webkit-scrollbar,
+.ticket-modal__body::-webkit-scrollbar,
+.event-modal__body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.task-modal__body::-webkit-scrollbar-track,
+.ticket-modal__body::-webkit-scrollbar-track,
+.event-modal__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.task-modal__body::-webkit-scrollbar-thumb,
+.ticket-modal__body::-webkit-scrollbar-thumb,
+.event-modal__body::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+}
+
+/* Enhanced content styling */
+.task-modal__body p,
+.ticket-modal__body p,
+.event-modal__body p {
+    margin: 0 0 var(--space-4) 0;
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-primary);
+}
+
+.task-modal__body strong,
+.ticket-modal__body strong,
+.event-modal__body strong {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-semibold);
 }
 
 .ticket-detail-grid {
     display: grid;
-    gap: var(--space-3);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-4) 0;
 }
 
 .ticket-detail,
 .event-detail {
+    background: var(--color-surface);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    transition: all var(--transition-fast);
+}
+
+.ticket-detail:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
+}
+
+.event-detail {
+    border-left: 4px solid var(--color-primary);
+    margin: var(--space-3) 0;
+}
+
+.event-detail:hover {
+    background: var(--color-surface-elevated);
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ticket-detail strong,
+.event-detail strong {
+    display: block;
+    margin-bottom: var(--space-2);
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Modal Animations */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes backdropFadeIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(8px) saturate(1.2);
+    }
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(60px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Dark Mode Enhancements */
+[data-theme="dark"] .task-modal__content,
+[data-theme="dark"] .ticket-modal__content,
+[data-theme="dark"] .event-modal__content {
+    background: var(--color-surface-elevated);
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .ticket-detail,
+[data-theme="dark"] .event-detail {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .ticket-detail:hover,
+[data-theme="dark"] .event-detail:hover {
+    background: var(--color-surface-elevated);
+    border-color: var(--color-primary);
+}
+
+/* Responsive Modal Design */
+@media (max-width: 767px) {
+    .task-modal,
+    .ticket-modal,
+    .event-modal {
+        padding: var(--space-2);
+    }
+    
+    .task-modal__content,
+    .ticket-modal__content,
+    .event-modal__content {
+        max-width: 100%;
+        max-height: 95vh;
+        border-radius: var(--radius-xl);
+    }
+    
+    .task-modal__header,
+    .ticket-modal__header,
+    .event-modal__header {
+        padding: var(--space-4);
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+    
+    .task-modal__header h3,
+    .ticket-modal__header h3,
+    .event-modal__header h3 {
+        font-size: var(--font-size-lg);
+    }
+    
+    .task-modal__body,
+    .ticket-modal__body,
+    .event-modal__body {
+        padding: var(--space-4);
+        max-height: calc(95vh - 100px);
+    }
+    
+    .ticket-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
