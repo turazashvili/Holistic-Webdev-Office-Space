@@ -107,10 +107,26 @@ export class AnnouncementsWidget extends BaseWidget {
         // Add event listeners for dismiss buttons
         this.addEventListeners();
         
+        // Restore saved collapse state after rendering
+        this.restoreToggleState();
+        
         // Announce new announcements to screen readers
         const highPriorityCount = this.data.filter(a => a.priority === 'high').length;
         if (highPriorityCount > 0) {
             this.announce(`${highPriorityCount} high priority announcement${highPriorityCount !== 1 ? 's' : ''} available`, 'assertive');
+        }
+    }
+
+    /**
+     * Restore the saved toggle state
+     */
+    restoreToggleState() {
+        const savedState = this.services.storage.getItem('announcements_collapsed');
+        const isCollapsed = savedState === true || savedState === 'true';
+        
+        if (isCollapsed) {
+            // Apply collapsed state
+            this.setToggleState(false);
         }
     }
 
@@ -121,19 +137,29 @@ export class AnnouncementsWidget extends BaseWidget {
         const toggleButton = document.querySelector('.announcements__toggle');
         if (!toggleButton) return;
 
-        // Load saved state
-        const isCollapsed = this.services.storage.getItem('announcements_collapsed') || false;
+        // Load saved state from localStorage
+        const savedState = this.services.storage.getItem('announcements_collapsed');
+        const isCollapsed = savedState === true || savedState === 'true';
+        
+        // Set initial state (expanded by default if no saved state)
         this.setToggleState(!isCollapsed);
+        
+        console.log(`📋 Announcements initial state: ${isCollapsed ? 'collapsed' : 'expanded'}`);
 
         toggleButton.addEventListener('click', () => {
             const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+            const newCollapsedState = isExpanded;
+            
+            // Update UI
             this.setToggleState(!isExpanded);
             
-            // Save state
-            this.services.storage.setItem('announcements_collapsed', !isExpanded);
+            // Save state to localStorage
+            this.services.storage.setItem('announcements_collapsed', newCollapsedState);
             
             // Announce state change
             this.announce(isExpanded ? 'Announcements collapsed' : 'Announcements expanded');
+            
+            console.log(`📋 Announcements state saved: ${newCollapsedState ? 'collapsed' : 'expanded'}`);
         });
 
         // Keyboard support
@@ -357,11 +383,15 @@ export class AnnouncementsWidget extends BaseWidget {
      */
     getDebugInfo() {
         const baseInfo = super.getDebugInfo();
+        const savedState = this.services.storage.getItem('announcements_collapsed');
+        
         return {
             ...baseInfo,
             dismissedCount: this.dismissedAnnouncements.size,
             highPriorityCount: this.getAnnouncementsByPriority('high').length,
-            criticalCount: this.data ? this.data.filter(a => a.priority === 'high' && a.type === 'error').length : 0
+            criticalCount: this.data ? this.data.filter(a => a.priority === 'high' && a.type === 'error').length : 0,
+            isCollapsed: savedState === true || savedState === 'true',
+            savedCollapseState: savedState
         };
     }
 }
