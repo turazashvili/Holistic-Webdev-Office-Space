@@ -2,7 +2,7 @@
 
 A professional, feature-rich intranet homepage that streamlines daily workflows for employees by surfacing critical information and tools in one cohesive dashboard.
 
-![Dashboard Preview](docs/dashboard-preview.png)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fturazashvili%2FHolistic-Webdev-Office-Space)
 
 ## 🌟 Features
 
