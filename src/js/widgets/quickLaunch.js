@@ -238,38 +238,48 @@ export class QuickLaunchWidget extends BaseWidget {
         this.saveShortcuts();
     }
 
-    showAddShortcutDialog() {
+    showAddShortcutDialog(existingShortcut = null) {
+        const isEditing = !!existingShortcut;
+        const dialogTitle = isEditing ? 'Edit Shortcut' : 'Add New Shortcut';
+        
         // Create modal dialog
         const dialog = document.createElement('div');
         dialog.className = 'shortcut-dialog';
         dialog.innerHTML = `
             <div class="shortcut-dialog__backdrop"></div>
             <div class="shortcut-dialog__content" role="dialog" aria-labelledby="dialog-title" aria-modal="true">
-                <h3 id="dialog-title">Add New Shortcut</h3>
+                <h3 id="dialog-title">${dialogTitle}</h3>
                 <form class="shortcut-form">
                     <div class="form-group">
                         <label for="shortcut-title">Title</label>
-                        <input type="text" id="shortcut-title" required maxlength="50">
+                        <input type="text" id="shortcut-title" required maxlength="50" 
+                               value="${isEditing ? this.sanitizeHTML(existingShortcut.title) : ''}">
                     </div>
                     <div class="form-group">
                         <label for="shortcut-url">URL</label>
-                        <input type="url" id="shortcut-url" required>
+                        <input type="url" id="shortcut-url" required 
+                               value="${isEditing ? existingShortcut.url : ''}">
                     </div>
                     <div class="form-group">
                         <label for="shortcut-description">Description</label>
-                        <input type="text" id="shortcut-description" maxlength="100">
+                        <input type="text" id="shortcut-description" maxlength="100" 
+                               value="${isEditing ? this.sanitizeHTML(existingShortcut.description) : ''}">
                     </div>
                     <div class="form-group">
                         <label for="shortcut-icon">Icon (emoji)</label>
-                        <input type="text" id="shortcut-icon" maxlength="2" placeholder="🔗">
+                        <input type="text" id="shortcut-icon" maxlength="2" placeholder="🔗" 
+                               value="${isEditing ? existingShortcut.icon : ''}">
                     </div>
                     <div class="form-group">
                         <label for="shortcut-color">Color</label>
-                        <input type="color" id="shortcut-color" value="#3b82f6">
+                        <input type="color" id="shortcut-color" 
+                               value="${isEditing ? existingShortcut.color : '#3b82f6'}">
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn btn--secondary" data-action="cancel">Cancel</button>
-                        <button type="submit" class="btn btn--primary">Add Shortcut</button>
+                        <button type="submit" class="btn btn--primary">
+                            ${isEditing ? 'Update Shortcut' : 'Add Shortcut'}
+                        </button>
                     </div>
                 </form>
             </div>
