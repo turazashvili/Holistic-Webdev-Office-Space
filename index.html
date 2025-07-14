@@ -32,11 +32,13 @@
         <div class="header__container">
             <h1 class="header__title">Smart Day-Starter Dashboard</h1>
             <nav class="header__nav" role="navigation" aria-label="Main navigation">
-                <button class="header__theme-toggle" aria-label="Toggle dark mode" type="button">
-                    <span class="theme-toggle__icon" aria-hidden="true">🌙</span>
-                </button>
-                <button class="header__settings" aria-label="Dashboard settings" type="button">
-                    <span class="settings__icon" aria-hidden="true">⚙️</span>
+                <div class="header__datetime">
+                    <div class="datetime__time" id="current-time">--:--</div>
+                    <div class="datetime__date" id="current-date">Loading...</div>
+                </div>
+                <button class="header__about" aria-label="About this dashboard" type="button">
+                    <span class="about__icon" aria-hidden="true">ℹ️</span>
+                    <span class="about__text">About</span>
                 </button>
             </nav>
         </div>
@@ -115,5 +117,6 @@
 
     <!-- JavaScript -->
     <script type="module" src="src/js/main.js"></script>
+    <script type="module" src="src/js/navbar.js"></script>
 </body>
 </html>
