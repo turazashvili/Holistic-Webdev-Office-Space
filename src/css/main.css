@@ -1265,10 +1265,29 @@ body {
     margin: 0 0 var(--space-1) 0;
 }
 
+.ticket__description,
 .task__description {
     font-size: var(--font-size-sm);
     color: var(--color-text-secondary);
     margin: 0;
+    line-height: var(--line-height-normal);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.ticket__title-section,
+.task__title-section {
+    flex: 1;
+    min-width: 0; /* Allow flex item to shrink below content size */
+}
+
+.ticket__title,
+.task__title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    margin: 0 0 var(--space-1) 0;
+    line-height: var(--line-height-tight);
 }
 
 .task__status-badge {
@@ -1619,7 +1638,8 @@ body {
     background: var(--color-error-light);
 }
 
-.ticket__header {
+.ticket__header,
+.task__header {
     display: flex;
     align-items: flex-start;
     gap: var(--space-3);
@@ -1633,8 +1653,10 @@ body {
     flex-shrink: 0;
 }
 
-.ticket__icon {
-    font-size: var(--font-size-base);
+.ticket__icon,
+.task__icon {
+    font-size: var(--font-size-lg);
+    flex-shrink: 0;
 }
 
 .ticket__id {
@@ -1644,27 +1666,12 @@ body {
     color: var(--color-text-secondary);
 }
 
-.ticket__title-section {
-    flex: 1;
-}
-
-.ticket__title {
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-semibold);
-    margin: 0 0 var(--space-1) 0;
-}
-
-.ticket__description {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
-    margin: 0;
-}
-
 .ticket__badges {
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
     align-items: flex-end;
+    flex-shrink: 0;
 }
 
 .ticket__priority-badge,
