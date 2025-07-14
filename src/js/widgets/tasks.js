@@ -334,6 +334,9 @@ export class TasksWidget extends BaseWidget {
 
         document.body.appendChild(modal);
         
+        // Prevent body scroll
+        document.body.classList.add('modal-open');
+        
         // Focus management
         const closeButton = modal.querySelector('.task-modal__close');
         closeButton.focus();
@@ -342,6 +345,7 @@ export class TasksWidget extends BaseWidget {
         // Close handlers
         const closeModal = () => {
             this.services.accessibility.releaseFocusTrap();
+            document.body.classList.remove('modal-open');
             document.body.removeChild(modal);
         };
 
