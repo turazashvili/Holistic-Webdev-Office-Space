@@ -88,8 +88,6 @@ smart-day-starter-dashboard/
 │       └── shortcuts.json
 ├── docs/                     # Documentation
 │   └── wireframes.md        # Design wireframes
-├── tasks.md                 # Development task tracking
-├── prd.md                   # Product requirements document
 └── README.md               # This file
 ```
 
@@ -129,11 +127,6 @@ smart-day-starter-dashboard/
 
 ## 🎨 Customization
 
-### Theme Options
-- **Light Mode** - Clean, professional appearance
-- **Dark Mode** - Reduced eye strain for low-light environments
-- **Auto Mode** - Follows system preference
-
 ### Layout Options
 - **Grid Layout** - Card-based widget arrangement
 - **Compact Mode** - Reduced spacing for information density
@@ -148,11 +141,6 @@ smart-day-starter-dashboard/
 
 ## 📊 Performance Metrics
 
-### Lighthouse Scores (Target)
-- **Performance**: ≥90
-- **Accessibility**: ≥95
-- **Best Practices**: ≥90
-- **SEO**: ≥90
 
 ### Key Metrics
 - **First Contentful Paint**: <1.5s
@@ -160,34 +148,6 @@ smart-day-starter-dashboard/
 - **Cumulative Layout Shift**: <0.1
 - **First Input Delay**: <100ms
 
-## 🧪 Testing
-
-### Automated Testing
-```javascript
-// Run comprehensive test suite
-import { TestingSuite } from './src/js/utils/testing.js';
-
-const tests = new TestingSuite();
-const results = await tests.runAllTests();
-console.log(results);
-```
-
-### Test Categories
-- **Accessibility Tests** - WCAG compliance, keyboard navigation, screen readers
-- **Performance Tests** - Load times, resource sizes, memory usage
-- **Functionality Tests** - Widget loading, data persistence, user interactions
-- **Responsive Tests** - Breakpoint behavior, touch targets
-- **Compatibility Tests** - Browser feature support
-
-### Manual Testing Checklist
-- [ ] Keyboard-only navigation works completely
-- [ ] Screen reader announces all content properly
-- [ ] All interactive elements have 44px+ touch targets
-- [ ] Color contrast meets WCAG AA standards
-- [ ] Works offline with appropriate messaging
-- [ ] Responsive design works on all target devices
-- [ ] Theme switching works correctly
-- [ ] Data persists across browser sessions
 
 ## 🔧 Development
 
@@ -324,47 +284,13 @@ The CSS architecture uses BEM methodology with CSS custom properties:
 - [ ] Validate accessibility
 - [ ] Performance audit
 
-### Environment Variables
-```javascript
-// config.js
-export const config = {
-    API_BASE_URL: process.env.API_BASE_URL || '/api',
-    REFRESH_INTERVAL: process.env.REFRESH_INTERVAL || 300000,
-    DEBUG_MODE: process.env.NODE_ENV === 'development'
-};
-```
-
-## 🤝 Contributing
-
-### Development Setup
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests: `npm test`
-5. Submit a pull request
-
-### Code Standards
-- Use ES6+ features
-- Follow BEM CSS methodology
-- Maintain WCAG 2.1 AA compliance
-- Write comprehensive tests
-- Document new features
-
-### Commit Messages
-```
-feat: add new widget for team metrics
-fix: resolve keyboard navigation issue in calendar
-docs: update API documentation
-test: add accessibility tests for announcements
-```
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- Built for the DEV.to Holistic Webdev Challenge
+- Built for the DEV.to Holistic Webdev Challenge by [Axero](https://axerosolutions.com/)
 - Inspired by modern intranet solutions
 - Accessibility guidelines from WCAG 2.1
 - Performance best practices from web.dev
