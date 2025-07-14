@@ -1,0 +1,287 @@
+/**
+ * Announcements Widget - Displays company announcements and alerts
+ */
+
+import { BaseWidget } from './baseWidget.js';
+
+export class AnnouncementsWidget extends BaseWidget {
+    constructor(container, services) {
+        super(container, services);
+        this.dismissedAnnouncements = new Set();
+        this.refreshIntervalMs = 600000; // 10 minutes for announcements
+    }
+
+    /**
+     * Initialize the announcements widget
+     */
+    async init() {
+        try {
+            console.log('🔔 Initializing Announcements Widget...');
+            
+            // Load dismissed announcements from storage
+            this.loadDismissedAnnouncements();
+            
+            // Load and render data
+            await this.loadData();
+            this.render();
+            
+            // Start auto-refresh
+            this.startAutoRefresh();
+            
+            this.isInitialized = true;
+            console.log('✅ Announcements Widget initialized');
+            
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
+
+    /**
+     * Load announcements data
+     */
+    async loadData() {
+        try {
+            const response = await fetch('src/data/announcements.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const announcements = await response.json();
+            
+            // Filter out expired and dismissed announcements
+            this.data = announcements.filter(announcement => {
+                // Check if expired
+                if (announcement.expiresAt && new Date(announcement.expiresAt) < new Date()) {
+                    return false;
+                }
+                
+                // Check if dismissed
+                if (this.dismissedAnnouncements.has(announcement.id)) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            // Sort by priority and creation date
+            this.data.sort((a, b) => {
+                const priorityOrder = { high: 3, medium: 2, low: 1 };
+                const priorityDiff = (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
+                
+                if (priorityDiff !== 0) return priorityDiff;
+                
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            });
+            
+        } catch (error) {
+            console.error('Failed to load announcements:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Render the announcements
+     */
+    render() {
+        if (!this.data || this.data.length === 0) {
+            this.showEmptyState('No announcements at this time', 'Refresh', () => this.refresh());
+            return;
+        }
+
+        const announcementsHTML = this.data.map(announcement => 
+            this.renderAnnouncement(announcement)
+        ).join('');
+
+        this.container.innerHTML = `
+            <div class="announcements__list" role="list">
+                ${announcementsHTML}
+            </div>
+        `;
+
+        // Add event listeners for dismiss buttons
+        this.addEventListeners();
+        
+        // Announce new announcements to screen readers
+        const highPriorityCount = this.data.filter(a => a.priority === 'high').length;
+        if (highPriorityCount > 0) {
+            this.announce(`${highPriorityCount} high priority announcement${highPriorityCount !== 1 ? 's' : ''} available`, 'assertive');
+        }
+    }
+
+    /**
+     * Render a single announcement
+     */
+    renderAnnouncement(announcement) {
+        const typeClass = `announcement--${announcement.type}`;
+        const priorityClass = `announcement--priority-${announcement.priority}`;
+        const dismissibleClass = announcement.dismissible ? 'announcement--dismissible' : '';
+        
+        const dismissButton = announcement.dismissible ? `
+            <button class="announcement__dismiss" 
+                    aria-label="Dismiss announcement: ${this.sanitizeHTML(announcement.title)}"
+                    data-announcement-id="${announcement.id}">
+                <span aria-hidden="true">×</span>
+            </button>
+        ` : '';
+
+        const timeAgo = this.formatRelativeTime(announcement.createdAt);
+        const expiresText = announcement.expiresAt ? 
+            `Expires ${this.formatDate(announcement.expiresAt)}` : '';
+
+        return `
+            <div class="announcement ${typeClass} ${priorityClass} ${dismissibleClass}" 
+                 role="listitem"
+                 data-announcement-id="${announcement.id}"
+                 data-priority="${announcement.priority}">
+                
+                <div class="announcement__content">
+                    <div class="announcement__header">
+                        <div class="announcement__icon" aria-hidden="true">${announcement.icon}</div>
+                        <div class="announcement__title-section">
+                            <h3 class="announcement__title">${this.sanitizeHTML(announcement.title)}</h3>
+                            <div class="announcement__meta">
+                                <span class="announcement__author">${this.sanitizeHTML(announcement.author)}</span>
+                                <span class="announcement__time" title="${this.formatDate(announcement.createdAt)}">${timeAgo}</span>
+                                ${expiresText ? `<span class="announcement__expires">${expiresText}</span>` : ''}
+                            </div>
+                        </div>
+                        ${dismissButton}
+                    </div>
+                    
+                    <div class="announcement__message">
+                        ${this.sanitizeHTML(announcement.message)}
+                    </div>
+                    
+                    ${announcement.priority === 'high' ? '<div class="announcement__priority-indicator" aria-label="High priority"></div>' : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Add event listeners
+     */
+    addEventListeners() {
+        // Dismiss button listeners
+        const dismissButtons = this.container.querySelectorAll('.announcement__dismiss');
+        dismissButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const announcementId = button.getAttribute('data-announcement-id');
+                this.dismissAnnouncement(announcementId);
+            });
+        });
+
+        // Keyboard support for announcements
+        const announcements = this.container.querySelectorAll('.announcement');
+        announcements.forEach(announcement => {
+            announcement.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    // Could expand announcement or show more details
+                    e.preventDefault();
+                    this.expandAnnouncement(announcement);
+                }
+            });
+        });
+    }
+
+    /**
+     * Dismiss an announcement
+     */
+    dismissAnnouncement(announcementId) {
+        const announcementElement = this.container.querySelector(`[data-announcement-id="${announcementId}"]`);
+        if (!announcementElement) return;
+
+        // Add dismissing animation class
+        announcementElement.classList.add('announcement--dismissing');
+        
+        // Announce dismissal to screen readers
+        const title = announcementElement.querySelector('.announcement__title').textContent;
+        this.announce(`Announcement "${title}" dismissed`);
+
+        // Remove after animation
+        setTimeout(() => {
+            // Add to dismissed set
+            this.dismissedAnnouncements.add(announcementId);
+            
+            // Save to storage
+            this.saveDismissedAnnouncements();
+            
+            // Remove from data and re-render
+            this.data = this.data.filter(a => a.id !== announcementId);
+            this.render();
+            
+            // Emit event
+            this.services.eventBus.emit('announcement:dismissed', announcementId);
+            
+        }, 300); // Match CSS animation duration
+    }
+
+    /**
+     * Expand announcement (placeholder for future feature)
+     */
+    expandAnnouncement(announcementElement) {
+        // Could show more details, related links, etc.
+        console.log('Expanding announcement:', announcementElement);
+    }
+
+    /**
+     * Load dismissed announcements from storage
+     */
+    loadDismissedAnnouncements() {
+        const dismissed = this.services.storage.getDismissedAnnouncements();
+        this.dismissedAnnouncements = new Set(dismissed);
+    }
+
+    /**
+     * Save dismissed announcements to storage
+     */
+    saveDismissedAnnouncements() {
+        const dismissed = Array.from(this.dismissedAnnouncements);
+        this.services.storage.setItem('dismissed_announcements', dismissed);
+    }
+
+    /**
+     * Clear all dismissed announcements (for testing/admin)
+     */
+    clearDismissedAnnouncements() {
+        this.dismissedAnnouncements.clear();
+        this.saveDismissedAnnouncements();
+        this.refresh();
+        this.announce('All dismissed announcements cleared');
+    }
+
+    /**
+     * Get announcements by priority
+     */
+    getAnnouncementsByPriority(priority) {
+        return this.data ? this.data.filter(a => a.priority === priority) : [];
+    }
+
+    /**
+     * Get announcements by type
+     */
+    getAnnouncementsByType(type) {
+        return this.data ? this.data.filter(a => a.type === type) : [];
+    }
+
+    /**
+     * Check if there are critical announcements
+     */
+    hasCriticalAnnouncements() {
+        return this.data && this.data.some(a => a.priority === 'high' && a.type === 'error');
+    }
+
+    /**
+     * Get widget-specific debug info
+     */
+    getDebugInfo() {
+        const baseInfo = super.getDebugInfo();
+        return {
+            ...baseInfo,
+            dismissedCount: this.dismissedAnnouncements.size,
+            highPriorityCount: this.getAnnouncementsByPriority('high').length,
+            criticalCount: this.data ? this.data.filter(a => a.priority === 'high' && a.type === 'error').length : 0
+        };
+    }
+}

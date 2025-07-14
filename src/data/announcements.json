@@ -1,0 +1,62 @@
+[
+  {
+    "id": "ann_001",
+    "title": "System Maintenance Tonight",
+    "message": "Scheduled maintenance will occur tonight from 11:00 PM to 1:00 AM EST. Some services may be temporarily unavailable.",
+    "type": "warning",
+    "priority": "high",
+    "dismissible": true,
+    "expiresAt": "2025-07-15T06:00:00Z",
+    "createdAt": "2025-07-14T09:00:00Z",
+    "author": "IT Operations",
+    "icon": "🔧"
+  },
+  {
+    "id": "ann_002",
+    "title": "New Employee Onboarding Session",
+    "message": "Welcome session for new team members scheduled for Friday at 2:00 PM in Conference Room A. All team leads please attend.",
+    "type": "info",
+    "priority": "medium",
+    "dismissible": true,
+    "expiresAt": "2025-07-18T18:00:00Z",
+    "createdAt": "2025-07-14T08:30:00Z",
+    "author": "HR Department",
+    "icon": "👋"
+  },
+  {
+    "id": "ann_003",
+    "title": "Security Policy Update",
+    "message": "Updated security policies are now in effect. Please review the new guidelines in the employee handbook and complete the mandatory training by end of week.",
+    "type": "error",
+    "priority": "high",
+    "dismissible": false,
+    "expiresAt": "2025-07-21T23:59:59Z",
+    "createdAt": "2025-07-14T07:00:00Z",
+    "author": "Security Team",
+    "icon": "🔒"
+  },
+  {
+    "id": "ann_004",
+    "title": "Team Building Event",
+    "message": "Join us for our quarterly team building event next Friday! Food, games, and prizes. RSVP in the employee portal by Wednesday.",
+    "type": "success",
+    "priority": "low",
+    "dismissible": true,
+    "expiresAt": "2025-07-23T17:00:00Z",
+    "createdAt": "2025-07-14T10:15:00Z",
+    "author": "People Operations",
+    "icon": "🎉"
+  },
+  {
+    "id": "ann_005",
+    "title": "Quarterly All-Hands Meeting",
+    "message": "Q3 results and Q4 planning session scheduled for Thursday at 10:00 AM. Meeting link will be sent via email.",
+    "type": "info",
+    "priority": "medium",
+    "dismissible": true,
+    "expiresAt": "2025-07-17T15:00:00Z",
+    "createdAt": "2025-07-14T06:45:00Z",
+    "author": "Executive Team",
+    "icon": "📊"
+  }
+]
