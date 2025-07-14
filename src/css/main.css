@@ -1808,11 +1808,230 @@ body {
     white-space: nowrap;
 }
 
-/* Modal Styles */
+/* Shortcut Dialog Styling */
+.shortcut-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.shortcut-dialog__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+}
+
+.shortcut-dialog__content {
+    position: relative;
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-xl);
+    max-width: 480px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease-out;
+    border: 1px solid var(--color-border);
+}
+
+#dialog-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    margin: 0 0 var(--space-6) 0;
+    padding: var(--space-6) var(--space-6) 0 var(--space-6);
+    text-align: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-4);
+}
+
+.shortcut-form {
+    padding: var(--space-6);
+    padding-top: var(--space-4);
+}
+
+.form-group {
+    margin-bottom: var(--space-5);
+}
+
+.form-group label {
+    display: block;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="url"] {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+    transition: all var(--transition-fast);
+    box-sizing: border-box;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="url"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    background: var(--color-surface-elevated);
+}
+
+.form-group input[type="text"]::placeholder,
+.form-group input[type="url"]::placeholder {
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+.form-group input[type="color"] {
+    width: 60px;
+    height: 44px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.form-group input[type="color"]:hover,
+.form-group input[type="color"]:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: flex-end;
+    margin-top: var(--space-8);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+}
+
+.btn {
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 2px solid transparent;
+    min-width: 100px;
+    text-align: center;
+}
+
+.btn--primary {
+    background: var(--color-primary);
+    color: var(--color-white);
+    border-color: var(--color-primary);
+}
+
+.btn--primary:hover,
+.btn--primary:focus {
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn--secondary {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.btn--secondary:hover,
+.btn--secondary:focus {
+    background: var(--color-surface-elevated);
+    border-color: var(--color-text-muted);
+    transform: translateY(-1px);
+}
+
+/* Dark mode overrides for dialog */
+[data-theme="dark"] .shortcut-dialog__content {
+    background: var(--color-surface-elevated);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] #dialog-title {
+    color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .form-group label {
+    color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .form-group input[type="text"],
+[data-theme="dark"] .form-group input[type="url"] {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .form-group input[type="text"]:focus,
+[data-theme="dark"] .form-group input[type="url"]:focus {
+    background: var(--color-surface-elevated);
+    border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .btn--secondary {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .btn--secondary:hover,
+[data-theme="dark"] .btn--secondary:focus {
+    background: var(--color-surface-elevated);
+    border-color: var(--color-text-muted);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Other Modal Styles */
 .task-modal,
 .ticket-modal,
-.event-modal,
-.shortcut-dialog {
+.event-modal {
     position: fixed;
     top: 0;
     left: 0;
