@@ -426,6 +426,21 @@ button {
     color: var(--color-text-primary) !important;
 }
 
+/* Specific fixes for ticket and task elements */
+[data-theme="dark"] .ticket__title-section h4,
+[data-theme="dark"] .task__title-section h4,
+[data-theme="dark"] .ticket__title-section .ticket__title,
+[data-theme="dark"] .task__title-section .task__title {
+    color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .ticket__title-section p,
+[data-theme="dark"] .task__title-section p,
+[data-theme="dark"] .ticket__description,
+[data-theme="dark"] .task__description {
+    color: var(--color-text-secondary) !important;
+}
+
 /* Force secondary text color for descriptions and meta info */
 [data-theme="dark"] .task__description,
 [data-theme="dark"] .ticket__description,
@@ -434,6 +449,77 @@ button {
 [data-theme="dark"] .ticket__details,
 [data-theme="dark"] .event__time,
 [data-theme="dark"] .event__details {
+    color: var(--color-text-secondary) !important;
+}
+
+/* Ensure all paragraph and heading elements in cards are visible */
+[data-theme="dark"] .widget p,
+[data-theme="dark"] .widget h1, [data-theme="dark"] .widget h2, [data-theme="dark"] .widget h3,
+[data-theme="dark"] .widget h4, [data-theme="dark"] .widget h5, [data-theme="dark"] .widget h6,
+[data-theme="dark"] .task p, [data-theme="dark"] .task h4,
+[data-theme="dark"] .ticket p, [data-theme="dark"] .ticket h4,
+[data-theme="dark"] .announcement p, [data-theme="dark"] .announcement h3,
+[data-theme="dark"] .calendar__event p, [data-theme="dark"] .calendar__event h5 {
+    color: var(--color-text-primary) !important;
+}
+
+/* Comprehensive dark mode text color reset - highest priority */
+[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+[data-theme="dark"] body {
+    color: var(--color-text-primary) !important;
+}
+
+/* Reset all text elements to inherit from body in dark mode */
+[data-theme="dark"] * {
+    color: inherit;
+}
+
+/* Then apply specific overrides */
+[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3, 
+[data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6,
+[data-theme="dark"] .widget__title,
+[data-theme="dark"] .section__title {
+    color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] p {
+    color: var(--color-text-primary) !important;
+}
+
+/* Ultra-specific dark mode text fixes - target all possible text elements */
+[data-theme="dark"] .ticket h4,
+[data-theme="dark"] .task h4,
+[data-theme="dark"] .announcement h3,
+[data-theme="dark"] .calendar__event h5,
+[data-theme="dark"] .widget h2,
+[data-theme="dark"] .widget h3,
+[data-theme="dark"] .widget h4,
+[data-theme="dark"] .widget h5 {
+    color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .ticket p,
+[data-theme="dark"] .task p,
+[data-theme="dark"] .announcement p,
+[data-theme="dark"] .calendar__event p,
+[data-theme="dark"] .widget p {
+    color: var(--color-text-secondary) !important;
+}
+
+/* Target specific classes that might override */
+[data-theme="dark"] .ticket__title,
+[data-theme="dark"] .task__title,
+[data-theme="dark"] .announcement__title,
+[data-theme="dark"] .event__title {
+    color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .ticket__description,
+[data-theme="dark"] .task__description,
+[data-theme="dark"] .announcement__message {
     color: var(--color-text-secondary) !important;
 }
 
