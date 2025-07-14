@@ -141,17 +141,20 @@ export class QuickLaunchWidget extends BaseWidget {
                 this.deleteShortcut(shortcutId);
             });
         });
-            });
-        });
 
         // Shortcut click tracking
         const shortcuts = this.container.querySelectorAll('.shortcut:not(.shortcut--add)');
         shortcuts.forEach(shortcut => {
             shortcut.addEventListener('click', (e) => {
-                const shortcutId = shortcut.closest('[data-shortcut-id]').getAttribute('data-shortcut-id');
-                this.trackShortcutUsage(shortcutId);
+                const shortcutId = shortcut.closest('[data-shortcut-id]')?.getAttribute('data-shortcut-id');
+                if (shortcutId) {
+                    this.trackShortcutUsage(shortcutId);
+                }
             });
         });
+
+        // Drag and drop functionality
+        this.setupDragAndDrop();
     }
 
     setupDragAndDrop() {
