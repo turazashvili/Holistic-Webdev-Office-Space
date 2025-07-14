@@ -75,6 +75,16 @@
     
     <!-- Skip navigation for accessibility -->
     <a href="#main-content" class="skip-nav">Skip to main content</a>
+    
+    <!-- Prevent transitions on page load -->
+    <script>
+        document.documentElement.classList.add('no-transitions');
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.documentElement.classList.remove('no-transitions');
+            }, 100);
+        });
+    </script>
 </head>
 <body>
     <!-- Demo Banner -->

@@ -57,10 +57,20 @@ export class ThemeManager {
      */
     applyTheme(theme) {
         this.currentTheme = theme;
+        
+        // Remove any existing theme classes
+        document.documentElement.removeAttribute('data-theme');
+        document.body.classList.remove('theme-light', 'theme-dark');
+        
+        // Apply new theme
         document.documentElement.setAttribute('data-theme', theme);
+        document.body.classList.add(`theme-${theme}`);
         
         // Update meta theme-color for mobile browsers
         this.updateMetaThemeColor(theme);
+        
+        // Force a repaint to ensure all styles are applied
+        document.body.offsetHeight;
         
         // Announce theme change to screen readers
         const announcement = `Theme switched to ${theme} mode`;
