@@ -60,3 +60,4 @@ coverage/
 # Cache directories
 .cache/
 .parcel-cache/
+.vercel
