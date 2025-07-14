@@ -7,6 +7,8 @@
 import { StorageService } from './services/storage.js';
 import { ThemeManager } from './services/theme.js';
 import { EventBus } from './services/eventBus.js';
+import { RealtimeService } from './services/realtime.js';
+import { CustomizationService } from './services/customization.js';
 
 // Import widget modules
 import { AnnouncementsWidget } from './widgets/announcements.js';
@@ -33,6 +35,10 @@ class DashboardApp {
             loading: new LoadingManager(),
             accessibility: new AccessibilityManager()
         };
+        
+        // Initialize advanced services after basic ones
+        this.services.realtime = new RealtimeService(this.services.eventBus, this.services.storage);
+        this.services.customization = new CustomizationService(this.services.storage, this.services.eventBus);
     }
 
     /**
@@ -53,6 +59,9 @@ class DashboardApp {
 
             // Set up event listeners
             this.setupEventListeners();
+
+            // Set up real-time handlers
+            this.setupRealtimeHandlers();
 
             // Hide loading indicator
             this.services.loading.hide();
@@ -80,6 +89,12 @@ class DashboardApp {
 
         // Initialize accessibility manager
         this.services.accessibility.init();
+
+        // Initialize customization service
+        this.services.customization.init();
+
+        // Initialize real-time service
+        this.services.realtime.init();
 
         // Test storage availability
         if (!this.services.storage.isAvailable()) {
@@ -171,8 +186,7 @@ class DashboardApp {
         const settingsButton = document.querySelector('.header__settings');
         if (settingsButton) {
             settingsButton.addEventListener('click', () => {
-                console.log('Settings clicked - feature coming soon');
-                this.services.accessibility.announce('Settings feature coming soon');
+                this.showSettingsPanel();
             });
         }
 
@@ -202,8 +216,42 @@ class DashboardApp {
     }
 
     /**
-     * Handle global keyboard shortcuts
+     * Show settings panel
      */
+    showSettingsPanel() {
+        const panel = this.services.customization.createCustomizationPanel();
+        document.body.appendChild(panel);
+        
+        // Focus management
+        const closeButton = panel.querySelector('.customization-panel__close');
+        if (closeButton) {
+            closeButton.focus();
+            this.services.accessibility.trapFocus(panel);
+        }
+    }
+
+    /**
+     * Handle widget refresh requests from real-time service
+     */
+    setupRealtimeHandlers() {
+        this.services.eventBus.on('widget:refresh-requested', (widgetName) => {
+            const widget = this.widgets.get(widgetName);
+            if (widget && typeof widget.refresh === 'function') {
+                widget.refresh().catch(error => {
+                    console.error(`Failed to refresh ${widgetName}:`, error);
+                });
+            }
+        });
+
+        this.services.eventBus.on('network:offline', () => {
+            this.services.accessibility.announce('Connection lost - working offline');
+        });
+
+        this.services.eventBus.on('network:online', () => {
+            this.services.accessibility.announce('Connection restored');
+            this.refreshWidgets();
+        });
+    }
     handleGlobalKeyboard(event) {
         // Alt + T: Toggle theme
         if (event.altKey && event.key === 't') {
